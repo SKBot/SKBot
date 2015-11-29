@@ -292,7 +292,7 @@ BWAPI::Unit WorkerManager::getWorkerScout()
     return nullptr;
 }
 
-//getWorkerCombat()
+/*
 BWAPI::Unit WorkerManager::getWorkerCombat()
 {
 	// for each of our workers
@@ -311,7 +311,7 @@ BWAPI::Unit WorkerManager::getWorkerCombat()
 	}
 
 	return nullptr;
-}
+}*/
 
 void WorkerManager::handleMoveWorkers() 
 {
