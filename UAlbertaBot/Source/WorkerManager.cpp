@@ -133,8 +133,18 @@ void WorkerManager::handleIdleWorkers()
 		// if it is idle
 		if (workerData.getWorkerJob(worker) == WorkerData::Idle) 
 		{
-			// send it to the nearest mineral patch
-			setMineralWorker(worker);
+			//if worker number >=2, set combat 
+			if(Config::Strategy::StrategyName == "Terran_Custom")
+			{
+				if (workerData.getNumMineralWorkers() >= 2)
+				{
+					setCombatWorker(worker);
+				}
+			}
+			else{
+				// send it to the nearest mineral patch
+				setMineralWorker(worker);
+			}
 		}
 	}
 }
@@ -206,11 +216,22 @@ void WorkerManager::finishedWithCombatWorkers()
 
 		if (workerData.getWorkerJob(worker) == WorkerData::Combat)
 		{
-			setMineralWorker(worker);
+			workerData.setWorkerJob(worker, WorkerData::Idle, nullptr);
 		}
 	}
 }
+/*
+//modified, finish with one combat worker
+void WorkerManager::finishedWithCombatWorker(BWAPI::Unit unit)
+{
+	UAB_ASSERT(worker != nullptr, "Worker was null");
 
+	if (workerData.getWorkerJob(worker) == WorkerData::Combat)
+	{
+		workerData.setWorkerJob(worker, WorkerData::Idle, nullptr);
+	}
+}
+*/
 BWAPI::Unit WorkerManager::getClosestMineralWorkerTo(BWAPI::Unit enemyUnit)
 {
     UAB_ASSERT(enemyUnit != nullptr, "enemyUnit was null");
@@ -269,6 +290,27 @@ BWAPI::Unit WorkerManager::getWorkerScout()
 	}
 
     return nullptr;
+}
+
+//getWorkerCombat()
+BWAPI::Unit WorkerManager::getWorkerCombat()
+{
+	// for each of our workers
+	for (auto & worker : workerData.getWorkers())
+	{
+		UAB_ASSERT(worker != nullptr, "Worker was null");
+		if (!worker)
+		{
+			continue;
+		}
+		// if it is a move worker
+		if (workerData.getWorkerJob(worker) == WorkerData::Combat)
+		{
+			return worker;
+		}
+	}
+
+	return nullptr;
 }
 
 void WorkerManager::handleMoveWorkers() 
@@ -334,13 +376,13 @@ BWAPI::Unit WorkerManager::getClosestDepot(BWAPI::Unit worker)
 }
 
 
-// other managers that need workers call this when they're done with a unit
+// other managers that need workers call this when they're done with a unit, modified, not dealing with Combat worker
 void WorkerManager::finishedWithWorker(BWAPI::Unit unit) 
 {
 	UAB_ASSERT(unit != nullptr, "Unit was null");
 
 	//BWAPI::Broodwar->printf("BuildingManager finished with worker %d", unit->getID());
-	if (workerData.getWorkerJob(unit) != WorkerData::Scout)
+	if ((workerData.getWorkerJob(unit) != WorkerData::Scout) || (workerData.getWorkerJob(unit) != WorkerData::Combat))
 	{
 		workerData.setWorkerJob(unit, WorkerData::Idle, nullptr);
 	}
