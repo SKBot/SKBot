@@ -224,7 +224,13 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
             goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
         }
     }
-	else if (Config::Strategy::StrategyName == "Terran_Custom"){
+	else if ((Config::Strategy::StrategyName == "test"))
+	{
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 1));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Science_Vessel, 3));
+	}
+	else if (Config::Strategy::StrategyName == "Terran_Custom")
+	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 8));
 		if (numMarines > 5)
 		{

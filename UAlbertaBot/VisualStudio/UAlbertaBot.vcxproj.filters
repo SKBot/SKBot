@@ -153,7 +153,7 @@
     <ClCompile Include="..\Source\Logger.cpp">
       <Filter>util</Filter>
     </ClCompile>
-    <ClCompile Include="Science_vesselManager.cpp">
+    <ClCompile Include="..\Source\Science_vesselManager.cpp">
       <Filter>game\combat\micro</Filter>
     </ClCompile>
   </ItemGroup>
@@ -278,7 +278,7 @@
     <ClInclude Include="..\Source\Logger.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="Science_vesselManager.h">
+    <ClInclude Include="..\Source\Science_vesselManager.h">
       <Filter>game\combat\micro</Filter>
     </ClInclude>
   </ItemGroup>

@@ -140,6 +140,7 @@
     <ClCompile Include="..\Source\ParseUtils.cpp" />
     <ClCompile Include="..\source\ProductionManager.cpp" />
     <ClCompile Include="..\source\RangedManager.cpp" />
+    <ClCompile Include="..\Source\Science_vesselManager.cpp" />
     <ClCompile Include="..\source\ScoutManager.cpp" />
     <ClCompile Include="..\Source\Squad.cpp" />
     <ClCompile Include="..\Source\SquadData.cpp" />
@@ -153,7 +154,6 @@
     <ClCompile Include="..\Source\UnitUtil.cpp" />
     <ClCompile Include="..\source\WorkerData.cpp" />
     <ClCompile Include="..\source\WorkerManager.cpp" />
-    <ClCompile Include="Science_vesselManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\AutoObserver.h" />
@@ -182,6 +182,7 @@
     <ClInclude Include="..\Source\ParseUtils.h" />
     <ClInclude Include="..\source\ProductionManager.h" />
     <ClInclude Include="..\source\RangedManager.h" />
+    <ClInclude Include="..\Source\Science_vesselManager.h" />
     <ClInclude Include="..\source\ScoutManager.h" />
     <ClInclude Include="..\Source\Squad.h" />
     <ClInclude Include="..\Source\SquadData.h" />
@@ -196,7 +197,6 @@
     <ClInclude Include="..\Source\UnitUtil.h" />
     <ClInclude Include="..\source\WorkerData.h" />
     <ClInclude Include="..\source\WorkerManager.h" />
-    <ClInclude Include="Science_vesselManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
