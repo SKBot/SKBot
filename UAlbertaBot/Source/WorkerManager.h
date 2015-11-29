@@ -55,6 +55,7 @@ public:
     BWAPI::Unit getClosestEnemyUnit(BWAPI::Unit worker);
     BWAPI::Unit getClosestMineralWorkerTo(BWAPI::Unit enemyUnit);
     BWAPI::Unit getWorkerScout();
+	BWAPI::Unit getWorkerCombat();
 
     void        setBuildingWorker(BWAPI::Unit worker,Building & b);
     void        setRepairWorker(BWAPI::Unit worker,BWAPI::Unit unitToRepair);
