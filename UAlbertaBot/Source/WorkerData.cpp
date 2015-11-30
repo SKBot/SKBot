@@ -1,5 +1,6 @@
 #include "WorkerData.h"
 #include "Micro.h"
+#include "CombatCommander.h"
 
 using namespace UAlbertaBot;
 
@@ -138,6 +139,15 @@ void WorkerData::setWorkerJob(BWAPI::Unit unit, enum WorkerJob job, BWAPI::Unit 
 	else if (job == Scout)
 	{
 
+	}
+	else if (job == Combat)
+	{
+		// start attacking 
+		if (!unit->isAttacking())
+		{
+			BWAPI::Position target = CombatCommander().getMainAttackLocationPB();
+			Micro::SmartAttackMove(unit, target);
+		}
 	}
     else if (job == Build)
     {

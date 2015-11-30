@@ -134,12 +134,9 @@ void WorkerManager::handleIdleWorkers()
 		if (workerData.getWorkerJob(worker) == WorkerData::Idle) 
 		{
 			//if worker number >=2, set combat 
-			if(Config::Strategy::StrategyName == "Terran_Custom")
+			if (workerData.getNumMineralWorkers() >= 2)
 			{
-				if (workerData.getNumMineralWorkers() >= 2)
-				{
-					setCombatWorker(worker);
-				}
+				setCombatWorker(worker);
 			}
 			else{
 				// send it to the nearest mineral patch
