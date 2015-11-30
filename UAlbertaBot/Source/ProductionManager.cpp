@@ -59,6 +59,20 @@ void ProductionManager::update()
 		performBuildOrderSearch();
 	}
 
+
+	//for strategy "Terran_Custom"
+	//if bunker <2 and any unit is under attack, build a bunker near attacked unit
+	
+	for (auto & unit : BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->isUnderAttack() && (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+			&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 2))
+		{
+			performBuildOrderSearch();
+		}
+		break;
+	} 
+
 	// detect if there's a build order deadlock once per second
 	if ((BWAPI::Broodwar->getFrameCount() % 24 == 0) && detectBuildOrderDeadlock())
 	{
@@ -67,25 +81,6 @@ void ProductionManager::update()
 		    BWAPI::Broodwar->printf("Supply deadlock detected, building supply!");
         }
 		_queue.queueAsHighestPriority(MetaType(BWAPI::Broodwar->self()->getRace().getSupplyProvider()), true);
-	}
-
-	//for strategy "Terran_Custom"
-	//if worker >= 4, bunker <2, any unit is under attack, build a bunker near attacked unit
-	if ((Config::Strategy::StrategyName == "Terran_Custom") && (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
-		&& (WorkerData().getNumWorkers() >= 4))
-	{
-		if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 2)
-		{
-			for (auto & unit : BWAPI::Broodwar->self()->getUnits())
-			{
-				if (unit->isUnderAttack())
-				{
-					_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
-					_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
-				}
-			}
-		}
-		WorkerManager::Instance().finishedWithCombatWorkers();
 	}
 
 	// if they have cloaked units get a new goal asap

@@ -133,8 +133,8 @@ void WorkerManager::handleIdleWorkers()
 		// if it is idle
 		if (workerData.getWorkerJob(worker) == WorkerData::Idle) 
 		{
-			//if worker number >=2, set combat 
-			if (workerData.getNumMineralWorkers() >= 2)
+			//if worker number >=8, set combat 
+			if (workerData.getNumMineralWorkers() >= 8)
 			{
 				setCombatWorker(worker);
 			}

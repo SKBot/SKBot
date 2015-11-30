@@ -415,7 +415,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
     }
 	
 	//if building a bunker for strategy "Terran_Custom", return one location near an attacked unit
-	if ((b.type == BWAPI::UnitTypes::Terran_Bunker) && (Config::Strategy::StrategyName == "Terran_Custom"))
+	if ((b.type == BWAPI::UnitTypes::Terran_Bunker)) //&& (Config::Strategy::StrategyName == "Terran_Custom"))
 	{
 		for (auto & unit : BWAPI::Broodwar->self()->getUnits())
 		{
