@@ -101,6 +101,10 @@ void CombatCommander::updateAttackSquads()
         {
             _squadData.assignUnitToSquad(unit, mainAttackSquad);
         }
+		else if ((unit->getType().isWorker() == true) && (WorkerData().getWorkerJob(unit) == WorkerData::Combat) && _squadData.canAssignUnitToSquad(unit, mainAttackSquad))
+		{
+			_squadData.assignUnitToSquad(unit, mainAttackSquad);
+		}
     }
 
     SquadOrder mainAttackOrder(SquadOrderTypes::Attack, getMainAttackLocation(), 800, "Attack Enemy Base");
