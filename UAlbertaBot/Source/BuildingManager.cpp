@@ -413,20 +413,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
     {
         return BWAPI::TilePositions::None;
     }
-	
-	//if building a bunker for strategy "Terran_Custom", return one location near an attacked unit
-	if ((b.type == BWAPI::UnitTypes::Terran_Bunker) && (Config::Strategy::StrategyName == "Terran_Custom"))
-	{
-		for (auto & unit : BWAPI::Broodwar->self()->getUnits())
-		{
-			if (unit->isUnderAttack())
-			{
-				return BuildingPlacer::Instance().getBuildLocationNear(b, 1, false);
-				break;
-			}
-		}
-	}
-	
+
     if (b.type.isRefinery())
     {
         return BuildingPlacer::Instance().getRefineryPosition();

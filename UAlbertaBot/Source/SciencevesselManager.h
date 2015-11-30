@@ -5,11 +5,11 @@
 
 namespace UAlbertaBot
 {
-	class Science_vesselManager : public MicroManager
+	class SciencevesselManager : public MicroManager
 	{
 	public:
 
-		Science_vesselManager();
+		SciencevesselManager();
 		void executeMicro(const BWAPI::Unitset & targets);
 	};
 }

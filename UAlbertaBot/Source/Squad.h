@@ -11,7 +11,7 @@
 #include "CombatSimulation.h"
 #include "TankManager.h"
 #include "MedicManager.h"
-#include "Science_vesselManager.h"
+#include "SciencevesselManager.h"
 
 
 namespace UAlbertaBot
@@ -33,7 +33,7 @@ class Squad
 	TransportManager    _transportManager;
     TankManager         _tankManager;
     MedicManager        _medicManager;
-	Science_vesselManager _science_vesselManager;
+	SciencevesselManager _sciencevesselManager;
 
 	std::map<BWAPI::Unit, bool>	_nearEnemy;
 

@@ -1,13 +1,13 @@
-#include "Science_vesselManager.h"
+#include "SciencevesselManager.h"
 #include "UnitUtil.h"
 
 using namespace UAlbertaBot;
 
-Science_vesselManager::Science_vesselManager()
+SciencevesselManager::SciencevesselManager()
 {
 }
 
-void Science_vesselManager::executeMicro(const BWAPI::Unitset & targets)
+void SciencevesselManager::executeMicro(const BWAPI::Unitset & targets)
 {
 	const BWAPI::Unitset & scienceVessels = getUnits();
 
@@ -49,7 +49,7 @@ void Science_vesselManager::executeMicro(const BWAPI::Unitset & targets)
 		{
 			scienceVessel->useTech(BWAPI::TechTypes::Defensive_Matrix, closetTarget);
 
-			availableScienceVessel.erase(scienceVessel);
+			scienceVesslTargets.erase(closetTarget);
 		}
 
 		else
@@ -60,7 +60,7 @@ void Science_vesselManager::executeMicro(const BWAPI::Unitset & targets)
 
 	for (auto & scienceVessel : availableScienceVessel)
 	{
-		Micro::SmartAttackMove(scienceVessel, order.getPosition());
+		Micro::SmartMove(scienceVessel, order.getPosition());
 	}
 	
 }

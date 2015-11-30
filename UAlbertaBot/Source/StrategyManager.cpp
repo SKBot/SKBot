@@ -224,11 +224,6 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
             goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
         }
     }
-	else if ((Config::Strategy::StrategyName == "test"))
-	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 1));
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Science_Vessel, 3));
-	}
 	else if (Config::Strategy::StrategyName == "Terran_Custom")
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 8));
@@ -241,10 +236,6 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		if (numMarines > 10)
 		{
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 1));
-		}
-		if (numMarines > 15)
-		{
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::U_238_Shells, 1));
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Starport, 1));
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Science_Facility, 1));
 		}

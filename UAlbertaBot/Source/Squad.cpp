@@ -58,7 +58,7 @@ void Squad::update()
 		_rangedManager.regroup(regroupPosition);
         _tankManager.regroup(regroupPosition);
         _medicManager.regroup(regroupPosition);
-		_science_vesselManager.regroup(regroupPosition);
+		_sciencevesselManager.regroup(regroupPosition);
 	}
 	else // otherwise, execute micro
 	{
@@ -66,7 +66,7 @@ void Squad::update()
 		_rangedManager.execute(_order);
         _tankManager.execute(_order);
         _medicManager.execute(_order);
-		_science_vesselManager.execute(_order);
+		_sciencevesselManager.execute(_order);
 		_transportManager.update();
 
 		_detectorManager.setUnitClosestToEnemy(unitClosestToEnemy());
@@ -147,7 +147,7 @@ void Squad::addUnitsToMicroManagers()
 	BWAPI::Unitset transportUnits;
     BWAPI::Unitset tankUnits;
     BWAPI::Unitset medicUnits;
-	BWAPI::Unitset scienceVessel;
+	BWAPI::Unitset scienceVessels;
 
 	// add _units to micro managers
 	for (auto & unit : _units)
@@ -161,7 +161,7 @@ void Squad::addUnitsToMicroManagers()
             }
 			else if (unit->getType() == BWAPI::UnitTypes::Terran_Science_Vessel)
 			{
-				scienceVessel.insert(unit);
+				scienceVessels.insert(unit);
 			}
             else if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
             {
@@ -195,7 +195,7 @@ void Squad::addUnitsToMicroManagers()
 	_transportManager.setUnits(transportUnits);
     _tankManager.setUnits(tankUnits);
     _medicManager.setUnits(medicUnits);
-	_science_vesselManager.setUnits(scienceVessel);
+	_sciencevesselManager.setUnits(scienceVessels);
 }
 
 // calculates whether or not to regroup
