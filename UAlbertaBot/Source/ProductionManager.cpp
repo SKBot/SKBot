@@ -496,23 +496,9 @@ void ProductionManager::create(BWAPI::Unit producer, BuildOrderItem & item)
         && t.getUnitType() != BWAPI::UnitTypes::Zerg_Greater_Spire
         && !t.getUnitType().isAddon())
     {
-		//if a bunker for Terran_Custom 
-		if (t.getUnitType() == BWAPI::UnitTypes::Terran_Bunker) 
-		{
-			BWAPI::TilePosition a = BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB());
-			BWAPI::TilePosition b = BWAPI::Broodwar->self()->getStartLocation();
-			BWAPI::TilePosition c = BWAPI::TilePosition(15, 80);
-			//BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()), item.isGasSteal);
-			BuildingManager::Instance().addBuildingTask(t.getUnitType(), a, item.isGasSteal);
-			//BWAPI::TilePosition(BWTA::getNearestChokepoint(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()))->getCenter());
-			BWAPI::Broodwar->printf("1 attack location (%d, %d) \n", a.x, a.y);
-			BWAPI::Broodwar->printf("2 default location (%d, %d) \n", b.x, b.y);
-		}
-		else
-		{
-			// send the building task to the building manager
-			BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::Broodwar->self()->getStartLocation(), item.isGasSteal);
-		}
+		// send the building task to the building manager
+		BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::Broodwar->self()->getStartLocation(), item.isGasSteal);
+
     }
 
     else if (t.getUnitType().isAddon())
