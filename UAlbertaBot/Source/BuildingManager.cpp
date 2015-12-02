@@ -57,6 +57,7 @@ void BuildingManager::validateWorkersAndBuildings()
         {
             toRemove.push_back(b);
         }
+
     }
 
     removeBuildings(toRemove);

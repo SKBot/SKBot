@@ -51,21 +51,18 @@ void ProductionManager::update()
 
 	//for strategy "Terran_Custom"
 	//if bunker <2 and any unit is under attack, build a bunker near attacked unit
-
-	for (auto & unit : BWAPI::Broodwar->self()->getUnits())
-	{
-		if (unit->isUnderAttack() && (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
-			&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 2))
+	/*
+	if ((BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+			&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 2)
+			&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Barracks) > 1))
 		{
 			//build bunker
 			//BWAPI::Unit producer = ProductionManager::getProducer(MetaType(BWAPI::UnitTypes::Terran_Bunker), BWAPI::Position(CombatCommander().getMainAttackLocationPB()));
 			//Building bunker(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()));
 			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
-			manageBuildOrderQueue();
-
-		}
-		break;
-	}
+			//break;
+		}*/
+	
     
 	// if nothing is currently building, get a new goal from the strategy manager
 	if ((_queue.size() == 0) && (BWAPI::Broodwar->getFrameCount() > 10))
@@ -148,7 +145,7 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit unit)
 		}
 	}
 }
-
+/*
 void ProductionManager::manageBuildOrderQueue() 
 {
 	// if there is nothing in the _queue, oh well
@@ -219,7 +216,146 @@ void ProductionManager::manageBuildOrderQueue()
 			break;
 		}
 	}
+}*/
+
+void ProductionManager::manageBuildOrderQueue()
+{
+	// if there is nothing in the _queue, oh well
+	if (_queue.isEmpty())
+	{
+		return;
+	}
+
+	// the current item to be used
+	BuildOrderItem & currentItem = _queue.getHighestPriorityItem();
+
+	// while there is still something left in the _queue
+	while (!_queue.isEmpty())
+	{
+		// this is the unit which can produce the currentItem
+		BWAPI::Unit producer = getProducer(currentItem.metaType);
+		//modified for bunker
+		bool buildAbunker = false;
+		if (currentItem.metaType.getName() == (BWAPI::UnitTypes::Terran_Bunker).getName())
+		{
+			buildAbunker = true;
+		}
+		if (buildAbunker==true)
+		{
+			producer = getProducer(currentItem.metaType, BWAPI::Position(CombatCommander().getMainAttackLocationPB()));
+			Building bunker(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()));
+			if (!_haveLocationForThisBuilding)
+			{
+				_predictedTilePosition = BuildingManager::Instance().getBuildingLocation(bunker);
+			}
+
+			if (_predictedTilePosition != BWAPI::TilePositions::None)
+			{
+				_haveLocationForThisBuilding = true;
+			}
+		}
+
+		// check to see if we can make it right now
+		bool canMake = canMakeNow(producer, currentItem.metaType);
+
+		// if we try to build too many refineries manually remove it
+		if (currentItem.metaType.isRefinery() && (BWAPI::Broodwar->self()->allUnitCount(BWAPI::Broodwar->self()->getRace().getRefinery() >= 3)))
+		{
+			_queue.removeCurrentHighestPriorityItem();
+			break;
+		}
+
+		// if the next item in the list is a building and we can't yet make it
+		if (currentItem.metaType.isBuilding() && !(producer && canMake) && currentItem.metaType.whatBuilds().isWorker())
+		{
+			// construct a temporary building object
+			Building b(currentItem.metaType.getUnitType(), BWAPI::Broodwar->self()->getStartLocation());
+			b.isGasSteal = currentItem.isGasSteal;
+
+			// set the producer as the closest worker, but do not set its job yet
+			producer = WorkerManager::Instance().getBuilder(b, false);
+
+			// predict the worker movement to that building location
+			predictWorkerMovement(b);
+		}
+
+		// if we can make the current item
+		if (producer && canMake)
+		{
+			// create it
+			if (buildAbunker == true)
+			{
+				create(producer, BuildOrderItem((BWAPI::UnitTypes::Terran_Bunker), 1, true));
+			}
+			else
+			{
+				create(producer, currentItem);
+			}
+			_assignedWorkerForThisBuilding = false;
+			_haveLocationForThisBuilding = false;
+
+			if (buildAbunker == true)
+			{
+				Building bunker(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()));
+				// draw a box where the building will be placed
+				int x1 = _predictedTilePosition.x * 32;
+				int x2 = x1 + (bunker.type.tileWidth()) * 32;
+				int y1 = _predictedTilePosition.y * 32;
+				int y2 = y1 + (bunker.type.tileHeight()) * 32;
+				if (Config::Debug::DrawWorkerInfo)
+				{
+					BWAPI::Broodwar->drawBoxMap(x1, y1, x2, y2, BWAPI::Colors::Blue, false);
+				}
+
+				// where we want the worker to walk to
+				BWAPI::Position walkToPosition = BWAPI::Position(x1 + (bunker.type.tileWidth() / 2) * 32, y1 + (bunker.type.tileHeight() / 2) * 32);
+
+				// compute how many resources we need to construct this building
+				int mineralsRequired = std::max(0, bunker.type.mineralPrice() - getFreeMinerals());
+				int gasRequired = std::max(0, bunker.type.gasPrice() - getFreeGas());
+
+				// get a candidate worker to move to this location
+				BWAPI::Unit moveWorker = WorkerManager::Instance().getMoveWorker(walkToPosition);
+
+				// Conditions under which to move the worker: 
+				//		- there's a valid worker to move
+				//		- we haven't yet assigned a worker to move to this location
+				//		- the build position is valid
+				//		- we will have the required resources by the time the worker gets there
+				if (moveWorker && _haveLocationForThisBuilding && !_assignedWorkerForThisBuilding && (_predictedTilePosition != BWAPI::TilePositions::None) &&
+					WorkerManager::Instance().willHaveResources(mineralsRequired, gasRequired, moveWorker->getDistance(walkToPosition)))
+				{
+					// we have assigned a worker
+					_assignedWorkerForThisBuilding = true;
+
+					// tell the worker manager to move this worker
+					WorkerManager::Instance().setMoveWorker(mineralsRequired, gasRequired, walkToPosition);
+				}
+			}
+
+			// and remove it from the _queue
+			_queue.removeCurrentHighestPriorityItem();
+
+			// don't actually loop around in here
+			break;
+		}
+		// otherwise, if we can skip the current item
+		else if (_queue.canSkipItem())
+		{
+			// skip it
+			_queue.skipItem();
+
+			// and get the next one
+			currentItem = _queue.getNextHighestPriorityItem();
+		}
+		else
+		{
+			// so break out
+			break;
+		}
+	}
 }
+
 
 BWAPI::Unit ProductionManager::getProducer(MetaType t, BWAPI::Position closestTo)
 {
@@ -363,15 +499,20 @@ void ProductionManager::create(BWAPI::Unit producer, BuildOrderItem & item)
 		//if a bunker for Terran_Custom 
 		if (t.getUnitType() == BWAPI::UnitTypes::Terran_Bunker) 
 		{
-
-			BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()), item.isGasSteal);
+			BWAPI::TilePosition a = BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB());
+			BWAPI::TilePosition b = BWAPI::Broodwar->self()->getStartLocation();
+			BWAPI::TilePosition c = BWAPI::TilePosition(15, 80);
+			//BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()), item.isGasSteal);
+			BuildingManager::Instance().addBuildingTask(t.getUnitType(), a, item.isGasSteal);
+			//BWAPI::TilePosition(BWTA::getNearestChokepoint(BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()))->getCenter());
+			BWAPI::Broodwar->printf("1 attack location (%d, %d) \n", a.x, a.y);
+			BWAPI::Broodwar->printf("2 default location (%d, %d) \n", b.x, b.y);
 		}
 		else
 		{
 			// send the building task to the building manager
 			BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::Broodwar->self()->getStartLocation(), item.isGasSteal);
 		}
-		//BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::Broodwar->self()->getStartLocation(), item.isGasSteal);
     }
 
     else if (t.getUnitType().isAddon())

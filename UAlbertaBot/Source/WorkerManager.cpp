@@ -385,7 +385,7 @@ void WorkerManager::finishedWithWorker(BWAPI::Unit unit)
 	UAB_ASSERT(unit != nullptr, "Unit was null");
 
 	//BWAPI::Broodwar->printf("BuildingManager finished with worker %d", unit->getID());
-	if ((workerData.getWorkerJob(unit) != WorkerData::Scout)) //|| (workerData.getWorkerJob(unit) != WorkerData::Combat))
+	if ((workerData.getWorkerJob(unit) != WorkerData::Scout) || (workerData.getWorkerJob(unit) != WorkerData::Combat))
 	{
 		workerData.setWorkerJob(unit, WorkerData::Idle, nullptr);
 	}
@@ -507,8 +507,9 @@ BWAPI::Unit WorkerManager::getMoveWorker(BWAPI::Position p)
 	{
         UAB_ASSERT(unit != nullptr, "Unit was null");
 
-		// only consider it if it's a mineral worker
-		if (unit->isCompleted() && workerData.getWorkerJob(unit) == WorkerData::Minerals)
+		// only consider it if it's a mineral worker, 
+		//or combat worker
+		if (unit->isCompleted() && (workerData.getWorkerJob(unit) == WorkerData::Minerals || workerData.getWorkerJob(unit) == WorkerData::Combat))
 		{
 			// if it is a new closest distance, set the pointer
 			double distance = unit->getDistance(p);
