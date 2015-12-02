@@ -214,6 +214,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
     int numBay          = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 	int numFaci			= UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Science_Facility);
 	int numSciV			= UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Science_Vessel);
+	int numBunker		= UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Bunker);
 
     if (Config::Strategy::StrategyName == "Terran_MarineRush")
     {
@@ -227,21 +228,20 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	else if (Config::Strategy::StrategyName == "Terran_Custom")
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 8));
-		if (numMarines > 5)
+		if (numMarines > 4)
 		{
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 1));
-
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Bunker, numBunker + 1));
 		}
 		if (numMarines > 10)
 		{
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 1));
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Refinery, 1));
+		}
+		if (numMarines > 15)
+		{
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Starport, 1));
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Science_Facility, 1));
 		}
-		if (numFaci == 1 && numBay == 1){
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 2));
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 2));
+		if (numFaci == 1){
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Science_Vessel, numSciV + 1));
 		}
 	}
