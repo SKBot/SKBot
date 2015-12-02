@@ -427,6 +427,20 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
         return tile;
     }
 
+	if (b.type == BWAPI::UnitTypes::Terran_Bunker)
+	{
+		//THis works with specific location
+		return BWAPI::TilePosition(100, 10);
+		for (auto & unit : BWAPI::Broodwar->self()->getUnits())
+		{
+			if (unit->getType() == BWAPI::UnitTypes::Terran_Marine && unit->isUnderAttack())
+			{
+				BWAPI::TilePosition position;
+				return position;
+			}
+		}
+	}
+
     // set the building padding specifically
     int distance = b.type == BWAPI::UnitTypes::Protoss_Photon_Cannon ? 0 : Config::Macro::BuildingSpacing;
     if (b.type == BWAPI::UnitTypes::Protoss_Pylon && (numPylons < 3))
