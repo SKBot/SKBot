@@ -55,7 +55,7 @@
         "DrawSquadInfo"             : false,
         "DrawWorkerInfo"            : false,
         "DrawMouseCursorInfo"       : false,
-        "DrawBuildingInfo"          : false,
+        "DrawBuildingInfo"          : true,
         "DrawReservedBuildingTiles" : false,
         "DrawBOSSStateInfo"         : false,
         "PrintModuleTimeout"        : false

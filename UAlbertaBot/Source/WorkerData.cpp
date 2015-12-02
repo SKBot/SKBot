@@ -138,7 +138,7 @@ void WorkerData::setWorkerJob(BWAPI::Unit unit, enum WorkerJob job, BWAPI::Unit 
     }
 	else if (job == Scout)
 	{
-
+		
 	}
 	else if (job == Combat)
 	{

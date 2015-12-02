@@ -429,16 +429,8 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 
 	if (b.type == BWAPI::UnitTypes::Terran_Bunker)
 	{
-		//THis works with specific location
-		return BWAPI::TilePosition(100, 10);
-		for (auto & unit : BWAPI::Broodwar->self()->getUnits())
-		{
-			if (unit->getType() == BWAPI::UnitTypes::Terran_Marine && unit->isUnderAttack())
-			{
-				BWAPI::TilePosition position;
-				return position;
-			}
-		}
+		BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
+		UAB_ASSERT(enemyBaseLocation, "Should have enemy base location before attempting gas steal");
 	}
 
     // set the building padding specifically
