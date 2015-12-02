@@ -242,7 +242,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		if (numFaci == 1 && numBay == 1){
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Terran_Infantry_Weapons, 2));
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Terran_Infantry_Armor, 2));
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Science_Vessel, 3));
+			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Science_Vessel, numSciV + 1));
 		}
 	}
     else if (Config::Strategy::StrategyName == "Terran_4RaxMarines")

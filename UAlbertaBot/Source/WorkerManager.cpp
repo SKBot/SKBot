@@ -133,10 +133,8 @@ void WorkerManager::handleIdleWorkers()
 		// if it is idle
 		if (workerData.getWorkerJob(worker) == WorkerData::Idle) 
 		{
-<<<<<<< HEAD
 			// send it to the nearest mineral patch
 			setMineralWorker(worker);
-=======
 			//if worker number >=2, set combat 
 			if (workerData.getNumMineralWorkers() >= 2)
 			{
@@ -146,7 +144,6 @@ void WorkerManager::handleIdleWorkers()
 				// send it to the nearest mineral patch
 				setMineralWorker(worker);
 			}
->>>>>>> db24129e7a4b6884e08e2cc35c3cd78681bc9ef9
 		}
 	}
 }

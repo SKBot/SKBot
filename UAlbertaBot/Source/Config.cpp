@@ -41,7 +41,7 @@ namespace Config
 
     namespace BotInfo
     {
-        std::string BotName                 = "UAlbertaBot";
+        std::string BotName                 = "SKBot";
         std::string Authors                 = "Dave Churchill";
         bool PrintInfoOnStart               = false;
     }

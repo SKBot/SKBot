@@ -1,7 +1,7 @@
 {
     "Bot Info" :
     {
-        "BotName"                   : "UAlbertaBot",
+        "BotName"                   : "SKBot",
         "Authors"                   : "David Churchill",
         "PrintInfoOnStart"          : false
     },
@@ -30,7 +30,7 @@
     "Macro" :
     {
         "BOSSFrameLimit"            : 160,
-        "WorkersPerRefinery"        : 3,
+        "WorkersPerRefinery"        : 1,
         "BuildingSpacing"           : 1,
         "PylonSpacing"              : 3
     },

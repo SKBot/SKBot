@@ -140,7 +140,7 @@
     <ClCompile Include="..\Source\ParseUtils.cpp" />
     <ClCompile Include="..\source\ProductionManager.cpp" />
     <ClCompile Include="..\source\RangedManager.cpp" />
-    <ClCompile Include="..\Source\Science_vesselManager.cpp" />
+    <ClCompile Include="..\Source\SciencevesselManager.cpp" />
     <ClCompile Include="..\source\ScoutManager.cpp" />
     <ClCompile Include="..\Source\Squad.cpp" />
     <ClCompile Include="..\Source\SquadData.cpp" />
@@ -182,7 +182,7 @@
     <ClInclude Include="..\Source\ParseUtils.h" />
     <ClInclude Include="..\source\ProductionManager.h" />
     <ClInclude Include="..\source\RangedManager.h" />
-    <ClInclude Include="..\Source\Science_vesselManager.h" />
+    <ClInclude Include="..\Source\SciencevesselManager.h" />
     <ClInclude Include="..\source\ScoutManager.h" />
     <ClInclude Include="..\Source\Squad.h" />
     <ClInclude Include="..\Source\SquadData.h" />
