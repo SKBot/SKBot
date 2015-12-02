@@ -143,10 +143,10 @@ void WorkerData::setWorkerJob(BWAPI::Unit unit, enum WorkerJob job, BWAPI::Unit 
 	else if (job == Combat)
 	{
 		// start attacking 
-		if (!unit->isAttacking())
+		if (!(unit->isAttacking()))
 		{
-			BWAPI::Position target = CombatCommander().getMainAttackLocationPB();
-			Micro::SmartAttackMove(unit, target);
+			BWAPI::Position(CombatCommander().getMainAttackLocationPB());
+			Micro::SmartAttackMove(unit, BWAPI::Position(CombatCommander().getMainAttackLocationPB()));
 		}
 	}
     else if (job == Build)

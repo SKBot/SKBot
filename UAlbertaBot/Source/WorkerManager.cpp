@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "WorkerManager.h"
 #include "Micro.h"
+#include "CombatCommander.h"
 
 using namespace UAlbertaBot;
 
@@ -133,8 +134,8 @@ void WorkerManager::handleIdleWorkers()
 		// if it is idle
 		if (workerData.getWorkerJob(worker) == WorkerData::Idle) 
 		{
-			//if worker number >=8, set combat 
-			if (workerData.getNumMineralWorkers() >= 8)
+			//if miners number >=8, or (miners>=6 and only one marine), set combat 
+			if ((workerData.getNumMineralWorkers() >= 8) || ((workerData.getNumMineralWorkers() >= 6) && (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine) == 1)))
 			{
 				setCombatWorker(worker);
 			}
@@ -173,12 +174,11 @@ void WorkerManager::handleCombatWorkers()
 
 		if (workerData.getWorkerJob(worker) == WorkerData::Combat)
 		{
-			BWAPI::Broodwar->drawCircleMap(worker->getPosition().x, worker->getPosition().y, 4, BWAPI::Colors::Yellow, true);
-			BWAPI::Unit target = getClosestEnemyUnit(worker);
+			BWAPI::Position target = CombatCommander().getMainAttackLocationPB();
 
 			if (target)
 			{
-				Micro::SmartAttackUnit(worker, target);
+				Micro::SmartAttackMove(worker, target);
 			}
 		}
 	}
@@ -332,6 +332,12 @@ void WorkerManager::setMineralWorker(BWAPI::Unit unit)
 {
     UAB_ASSERT(unit != nullptr, "Unit was null");
 
+	//release extra mineral workers
+	if ((workerData.getNumMineralWorkers() > 8) || ((workerData.getNumMineralWorkers() > 6) && (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine) == 1)))
+	{
+		setCombatWorker(unit);
+	}
+
 	// check if there is a mineral available to send the worker to
 	BWAPI::Unit depot = getClosestDepot(unit);
 
@@ -379,7 +385,7 @@ void WorkerManager::finishedWithWorker(BWAPI::Unit unit)
 	UAB_ASSERT(unit != nullptr, "Unit was null");
 
 	//BWAPI::Broodwar->printf("BuildingManager finished with worker %d", unit->getID());
-	if ((workerData.getWorkerJob(unit) != WorkerData::Scout) || (workerData.getWorkerJob(unit) != WorkerData::Combat))
+	if ((workerData.getWorkerJob(unit) != WorkerData::Scout)) //|| (workerData.getWorkerJob(unit) != WorkerData::Combat))
 	{
 		workerData.setWorkerJob(unit, WorkerData::Idle, nullptr);
 	}

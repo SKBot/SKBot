@@ -421,7 +421,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 		{
 			if (unit->isUnderAttack())
 			{
-				return BuildingPlacer::Instance().getBuildLocationNear(b, 1, false);
+				return BuildingPlacer::Instance().getBuildLocationNear(b, 3, false);
 				break;
 			}
 		}

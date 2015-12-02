@@ -314,7 +314,7 @@ void Squad::clear()
 {
     for (auto & unit : getUnits())
     {
-        if (unit->getType().isWorker())
+		if (unit->getType().isWorker() && !(unit->getType()==BWAPI::UnitTypes::Terran_SCV))
         {
             WorkerManager::Instance().finishedWithWorker(unit);
         }

@@ -1,4 +1,5 @@
 #include "ProductionManager.h"
+#include "CombatCommander.h"
 
 using namespace UAlbertaBot;
 
@@ -47,6 +48,24 @@ void ProductionManager::update()
 {
 	// check the _queue for stuff we can build
 	manageBuildOrderQueue();
+
+	//for strategy "Terran_Custom"
+	//if bunker <2 and any unit is under attack, build a bunker near attacked unit
+
+	for (auto & unit : BWAPI::Broodwar->self()->getUnits())
+	{
+		if (unit->isUnderAttack() && (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+			&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 2))
+		{
+			//build bunker
+			//BWAPI::Unit producer = ProductionManager::getProducer(MetaType(BWAPI::UnitTypes::Terran_Bunker), BWAPI::Position(CombatCommander().getMainAttackLocationPB()));
+			//Building bunker(BWAPI::UnitTypes::Terran_Bunker, BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()));
+			_queue.queueAsHighestPriority(MetaType(BWAPI::UnitTypes::Terran_Bunker), true);
+			manageBuildOrderQueue();
+
+		}
+		break;
+	}
     
 	// if nothing is currently building, get a new goal from the strategy manager
 	if ((_queue.size() == 0) && (BWAPI::Broodwar->getFrameCount() > 10))
@@ -58,20 +77,6 @@ void ProductionManager::update()
 
 		performBuildOrderSearch();
 	}
-
-
-	//for strategy "Terran_Custom"
-	//if bunker <2 and any unit is under attack, build a bunker near attacked unit
-	
-	for (auto & unit : BWAPI::Broodwar->self()->getUnits())
-	{
-		if (unit->isUnderAttack() && (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
-			&& (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 2))
-		{
-			performBuildOrderSearch();
-		}
-		break;
-	} 
 
 	// detect if there's a build order deadlock once per second
 	if ((BWAPI::Broodwar->getFrameCount() % 24 == 0) && detectBuildOrderDeadlock())
@@ -356,22 +361,17 @@ void ProductionManager::create(BWAPI::Unit producer, BuildOrderItem & item)
         && !t.getUnitType().isAddon())
     {
 		//if a bunker for Terran_Custom 
-		if ((t.getUnitType() == BWAPI::UnitTypes::Terran_Bunker) && (Config::Strategy::StrategyName == "Terran_Custom"))
+		if (t.getUnitType() == BWAPI::UnitTypes::Terran_Bunker) 
 		{
-			for (auto & unit : BWAPI::Broodwar->self()->getUnits())
-			{
-				if (unit->isUnderAttack())
-				{
-					BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::TilePosition(unit->getPosition()), item.isGasSteal);
-					break;
-				}
-			}
+
+			BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::TilePosition(CombatCommander().getMainAttackLocationPB()), item.isGasSteal);
 		}
 		else
 		{
 			// send the building task to the building manager
 			BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::Broodwar->self()->getStartLocation(), item.isGasSteal);
 		}
+		//BuildingManager::Instance().addBuildingTask(t.getUnitType(), BWAPI::Broodwar->self()->getStartLocation(), item.isGasSteal);
     }
 
     else if (t.getUnitType().isAddon())

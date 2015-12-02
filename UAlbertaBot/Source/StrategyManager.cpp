@@ -232,7 +232,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	else if (Config::Strategy::StrategyName == "Terran_Custom")
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 8));
-		if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 3))
+		if ((BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Bunker) < 1))
 		{
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Bunker, 1));
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Bunker, 1));
