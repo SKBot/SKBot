@@ -221,7 +221,17 @@ void BuildingManager::checkForStartedConstruction()
 }
 
 // STEP 5: IF WE ARE TERRAN, THIS MATTERS, SO: LOL
-void BuildingManager::checkForDeadTerranBuilders() {}
+void BuildingManager::checkForDeadTerranBuilders() 
+{
+	for (auto & b : _buildings)
+	{
+		if (b.status == BuildingStatus::UnderConstruction && b.builderUnit == nullptr)
+		{
+			BWAPI::Unit w = WorkerManager::Instance().getBuilder(b);
+			w->rightClick(b.position);
+		}
+	}
+}
 
 // STEP 6: CHECK FOR COMPLETED BUILDINGS
 void BuildingManager::checkForCompletedBuildings()
@@ -431,6 +441,11 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 	{
 		BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
 		UAB_ASSERT(enemyBaseLocation, "Should have enemy base location before attempting gas steal");
+		BWTA::Chokepoint * chokePoint = BWTA::getNearestChokepoint(enemyBaseLocation->getTilePosition());
+		std::pair<BWAPI::Position, BWAPI::Position> sides = chokePoint->getSides();
+		BWAPI::Position poi = enemyBaseLocation->getPosition().getDistance(sides.first) > enemyBaseLocation->getPosition().getDistance(sides.second) ? sides.first : sides.second;
+		//BWAPI::Broodwar->printf("Tisssle Position (%d, %d)", BWAPI::TilePosition(poi).x, BWAPI::TilePosition(poi).y);
+		return BWAPI::TilePosition(sides.second);
 	}
 
     // set the building padding specifically
@@ -443,6 +458,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
     // get a position within our region
     return BuildingPlacer::Instance().getBuildLocationNear(b,distance,false);
 }
+
 
 void BuildingManager::removeBuildings(const std::vector<Building> & toRemove)
 {
